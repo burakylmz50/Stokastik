@@ -15,14 +15,14 @@ import Foundation
     
     private let moviesService = ExploreService()
     
-    func getTopRatedMovies(page: Int) async {
+    func getNowPlayingMovies(page: Int) async {
         defer {
             isLoading = false
         }
         Task(priority: .background) {
             
             do {
-                let results =  try await moviesService.getTopRated(page: page).results ?? []
+                let results =  try await moviesService.getNowPlayingMovies(page: page).results ?? []
                 self.results = self.results + results
             } catch let error {
                 self.error = error

@@ -26,17 +26,20 @@ struct MovieView: View {
                             image: movieModel[item].posterPath ?? "",
                             title: movieModel[item].originalTitle ?? ""
                         ))
-                        .frame(width: 200, height: 300)
                         .onChange(of: item) { newValue in
                             currentIndex = newValue
                         }
-                        .onAppear {
-                            currentIndex = item
-                        }
                     }
                 }
+                .frame(height: 300)
                 .padding()
             }
         }
+    }
+}
+
+struct MovieView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainExplore()
     }
 }

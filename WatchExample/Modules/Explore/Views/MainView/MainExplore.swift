@@ -52,7 +52,7 @@ struct MainExploreSegments: View {
     var body: some View {
         switch selectedSegment {
         case .movies:
-            Explore2()
+            MoviesExplore()
         case .series:
             WatchNow()
         }
@@ -62,40 +62,5 @@ struct MainExploreSegments: View {
 struct Explore_Previews: PreviewProvider {
     static var previews: some View {
         MainExplore()
-    }
-}
-
-struct Explore2: View {
-    
-    @StateObject var viewModel = ExploreViewModel()
-    
-    @State var currentIndex: Int = 0
-    @State private var nextPageIndex: Int = 0
-    
-    var body: some View {
-        ScrollView(.vertical) {
-            Spacer(minLength: 20)
-            
-            MovieView(currentIndex: $currentIndex, title: "Now Playing", movieModel: viewModel.results)
-                .onChange(of: currentIndex) { index in
-                    Task {
-                        if viewModel.shouldLoadData(id: index) {
-                            nextPageIndex += 1
-                            await viewModel.getTopRatedMovies(page: nextPageIndex)
-                        }
-                    }
-                }
-        }
-        .scrollIndicators(.hidden)
-        .toolbarBackground(.automatic, for: .navigationBar)
-        .refreshable {
-            viewModel.removeAllData()
-            await viewModel.getTopRatedMovies(page: 1)
-        }
-        .onAppear {
-            Task {
-                await viewModel.getTopRatedMovies(page: 1)
-            }
-        }
     }
 }
