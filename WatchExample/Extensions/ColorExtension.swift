@@ -54,7 +54,6 @@ extension Color {
     }
 }
 
-
 extension Color {
     
     static func convert(_ color: Color) -> UIColor {

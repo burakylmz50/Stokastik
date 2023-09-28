@@ -54,7 +54,7 @@ struct MainExploreSegments: View {
         case .movies:
             MoviesExplore()
         case .series:
-            WatchNow()
+            WatchNow(title: "Main Explore")
         }
     }
 }

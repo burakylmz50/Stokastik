@@ -15,26 +15,28 @@ struct MovieCardViewModel  {
 
 struct MovieCardView: View {
     
-    private var movieCardViewModel: MovieCardViewModel
+    private var topRatedMoviesResponseResults: TopRatedMoviesResponseResults
     
-    init(movieCardViewModel: MovieCardViewModel) {
-        self.movieCardViewModel = movieCardViewModel
+    init(topRatedMoviesResponseResults: TopRatedMoviesResponseResults) {
+        self.topRatedMoviesResponseResults = topRatedMoviesResponseResults
     }
     
     var body: some View {
         VStack {
             ZStack {
-                MovieTitleView(title: movieCardViewModel.title)
+                MovieTitleView(title: topRatedMoviesResponseResults.originalTitle ?? "")
                 
-                CacheAsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500" + movieCardViewModel.image)!) { phase in
-                    switch phase {
-                    case .empty:
-                        ProgressView()
-                    case .success(let image):
-                        image.resizable()
-                            .aspectRatio(contentMode: .fill)
-                    default:
-                        EmptyView()
+                NavigationLink(destination: WatchNow(title: topRatedMoviesResponseResults.originalTitle ?? "")) {
+                    CacheAsyncImage(url: URL(string: "https://image.tmdb.org/t/p/w500" + (topRatedMoviesResponseResults.posterPath ?? ""))!) { phase in
+                        switch phase {
+                        case .empty:
+                            ProgressView()
+                        case .success(let image):
+                            image.resizable()
+                                .aspectRatio(contentMode: .fill)
+                        default:
+                            EmptyView()
+                        }
                     }
                 }
             }
@@ -55,11 +57,10 @@ struct MovieCardView: View {
                 .foregroundColor(.Tint.secondary)
         }
     }
-    
-    
-    struct MovieView_Previews: PreviewProvider {
-        static var previews: some View {
-            MainExplore()
-        }
+}
+
+struct MovieCardView_Previews: PreviewProvider {
+    static var previews: some View {
+        MainExplore()
     }
 }

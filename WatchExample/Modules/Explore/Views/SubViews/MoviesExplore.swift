@@ -7,50 +7,36 @@
 
 import SwiftUI
 
+enum MoviesExploreList {
+    case nowPlaying
+    case popularMovies
+}
+
 struct MoviesExplore: View {
     
-    @StateObject var viewModel = ExploreViewModel()
+    @StateObject var nowPlayingViewModel = ExploreViewModel(moviesExploreList: .nowPlaying)
+    @StateObject var popularMoviesViewModel = ExploreViewModel(moviesExploreList: .popularMovies)
     
     @State var currentIndex: Int = 0
     @State private var nextPageIndex: Int = 0
     
     var body: some View {
-        ScrollView(.vertical) {
-            Spacer(minLength: 20)
-            
-            MovieView(currentIndex: $currentIndex, title: "Now Playing", movieModel: viewModel.results)
-                .onChange(of: currentIndex) { index in
-                    Task {
-                        if viewModel.shouldLoadData(id: index) {
-                            nextPageIndex += 1
-                            await viewModel.getNowPlayingMovies(page: nextPageIndex)
-                        }
+        ScrollView(.vertical, showsIndicators: true) {
+            VStack {
+                MovieView(currentIndex: $currentIndex, title: "Now Playing", movieModel: nowPlayingViewModel.results)
+                    .onChange(of: currentIndex) { newValue in
+                        nowPlayingViewModel.shouldLoadData(result: nowPlayingViewModel.results[safe: newValue])
                     }
-                }
-            
-            Spacer()
-            
-            MovieView(currentIndex: $currentIndex, title: "Now Playing", movieModel: viewModel.results)
-                .onChange(of: currentIndex) { index in
-                    Task {
-                        if viewModel.shouldLoadData(id: index) {
-                            nextPageIndex += 1
-                            await viewModel.getNowPlayingMovies(page: nextPageIndex)
-                        }
+                Spacer()
+                
+                MovieView(currentIndex: $currentIndex, title: "Popular Movies", movieModel: popularMoviesViewModel.results)
+                    .onChange(of: currentIndex) { newValue in
+                        popularMoviesViewModel.shouldLoadData(result: popularMoviesViewModel.results[safe: newValue])
                     }
-                }
+            }
         }
         .scrollIndicators(.hidden)
         .toolbarBackground(.automatic, for: .navigationBar)
-        .refreshable {
-            viewModel.removeAllData()
-            await viewModel.getNowPlayingMovies(page: 1)
-        }
-        .onAppear {
-            Task {
-                await viewModel.getNowPlayingMovies(page: 1)
-            }
-        }
     }
 }
 

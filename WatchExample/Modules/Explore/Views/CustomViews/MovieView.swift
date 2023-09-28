@@ -22,16 +22,13 @@ struct MovieView: View {
             ScrollView(.horizontal) {
                 LazyHStack(alignment: .top) {
                     ForEach(0..<movieModel.count, id: \.self) { item in
-                        MovieCardView(movieCardViewModel: .init(
-                            image: movieModel[item].posterPath ?? "",
-                            title: movieModel[item].originalTitle ?? ""
-                        ))
-                        .onChange(of: item) { newValue in
-                            currentIndex = newValue
-                        }
+                        MovieCardView(topRatedMoviesResponseResults: movieModel[item])
+                            .onAppear {
+                                currentIndex = item
+                            }
                     }
                 }
-                .frame(height: 300)
+                .frame(width: .infinity, height: 300)
                 .padding()
             }
         }

@@ -19,7 +19,7 @@ struct TabBarView: View {
     
     var body: some View {
         TabView(selection: $selection) {
-            WatchNow()
+            WatchNow(title: "Tabbar")
                 .tabItem {
                     Label("WatchNow", systemImage: "play.circle")
                 }

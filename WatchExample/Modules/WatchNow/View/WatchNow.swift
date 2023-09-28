@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct WatchNow: View {
+    var title: String
     var body: some View {
-        Text("WatchNow")
+        Text(title)
     }
 }
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
-        WatchNow()
+        WatchNow(title: "Burak")
     }
 }

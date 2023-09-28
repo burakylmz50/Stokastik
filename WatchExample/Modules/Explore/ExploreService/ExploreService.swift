@@ -8,6 +8,7 @@
 import Foundation
 
 protocol ExploreServiceable {
+    func fetchMovies(moviesExploreList: MoviesExploreList, page: Int) async throws -> TopRatedMoviesResponse
     func getNowPlayingMovies(page: Int) async throws -> TopRatedMoviesResponse
     func getPopularMovies(page: Int) async throws -> TopRatedMoviesResponse
     func getUpcomingMovies(page: Int) async throws -> TopRatedMoviesResponse
@@ -15,6 +16,17 @@ protocol ExploreServiceable {
 }
 
 struct ExploreService: HTTPClient, ExploreServiceable {
+    
+    func fetchMovies(moviesExploreList: MoviesExploreList, page: Int) async throws -> TopRatedMoviesResponse {
+        
+        switch moviesExploreList {
+        case .nowPlaying:
+            return try await sendRequest(endpoint: ExploreEndpoint.nowPlayingMovies(page: page), responseModel: TopRatedMoviesResponse.self)
+        case .popularMovies:
+            return try await sendRequest(endpoint: ExploreEndpoint.popularMovies(page: page), responseModel: TopRatedMoviesResponse.self)
+        }
+    }
+    
     func getNowPlayingMovies(page: Int) async throws -> TopRatedMoviesResponse {
         return try await sendRequest(endpoint: ExploreEndpoint.nowPlayingMovies(page: page), responseModel: TopRatedMoviesResponse.self)
     }
