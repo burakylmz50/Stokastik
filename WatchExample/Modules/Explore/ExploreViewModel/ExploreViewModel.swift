@@ -11,7 +11,7 @@ import Foundation
     
     @Published private(set) var results: [TopRatedMoviesResponseResults] =  [TopRatedMoviesResponseResults]()
     @Published private(set) var error: Error?
-    @Published private(set) var isLoading = false
+    @Published private(set) var isLoading = true
     
     let moviesExploreList: MoviesExploreList
     
@@ -36,20 +36,24 @@ import Foundation
                 case .nowPlaying:
                     do {
                         let results =  try await moviesService.fetchMovies(moviesExploreList: .nowPlaying, page: page)
+                        self.isLoading = false
                         self.isEnd = results.page ?? 0 >= results.totalPages ?? 0
                         self.results = self.results + (results.results ?? [])
                         self.page += 1
                     } catch let error {
                         self.error = error
+                        self.isLoading = false
                     }
                 case .popularMovies:
                     do {
                         let results =  try await moviesService.fetchMovies(moviesExploreList: .popularMovies, page: page)
+                        self.isLoading = false
                         self.isEnd = results.page ?? 0 >= results.totalPages ?? 0
                         self.results = self.results + (results.results ?? [])
                         self.page += 1
                     } catch let error {
                         self.error = error
+                        self.isLoading = false
                     }
                     
                 }

@@ -10,33 +10,81 @@ import SwiftUI
 enum MoviesExploreList {
     case nowPlaying
     case popularMovies
+    
+    var title: String {
+        switch self {
+        case .nowPlaying:
+            return "Now Playing"
+        case .popularMovies:
+            return "Popular Movies"
+        }
+    }
 }
 
 struct MoviesExplore: View {
     
-    @StateObject var nowPlayingViewModel = ExploreViewModel(moviesExploreList: .nowPlaying)
-    @StateObject var popularMoviesViewModel = ExploreViewModel(moviesExploreList: .popularMovies)
+    @StateObject private var nowPlayingViewModel = ExploreViewModel(moviesExploreList: .nowPlaying)
+    @StateObject private var popularMoviesViewModel = ExploreViewModel(moviesExploreList: .popularMovies)
     
-    @State var currentIndex: Int = 0
-    @State private var nextPageIndex: Int = 0
+    @State private var nowPlayingCurrentIndex: Int = 0
+    @State private var popularMoviesCurrentIndex: Int = 0
+    
+    @State private var navigationPath: [MoviesExploreList] = []
     
     var body: some View {
-        ScrollView(.vertical, showsIndicators: true) {
-            VStack {
-                MovieView(currentIndex: $currentIndex, title: "Now Playing", movieModel: nowPlayingViewModel.results)
-                    .onChange(of: currentIndex) { newValue in
-                        nowPlayingViewModel.shouldLoadData(result: nowPlayingViewModel.results[safe: newValue])
+        NavigationStack(path: $navigationPath.animation(.easeOut)) {
+            ScrollView(.vertical, showsIndicators: true) {
+                VStack {
+                    MovieView(
+                        currentIndex: $nowPlayingCurrentIndex,
+                        title: MoviesExploreList.nowPlaying.title,
+                        movieModel: nowPlayingViewModel.results,
+                        isLoading: nowPlayingViewModel.isLoading,
+                        onTapGesture: {
+                            navigationPath.append(.nowPlaying)
+                        })
+                    .onChange(of: nowPlayingCurrentIndex) { oldValue, newValue in
+                        nowPlayingViewModel.shouldLoadData(
+                            result: nowPlayingViewModel.results[safe: newValue]
+                        )
                     }
-                Spacer()
-                
-                MovieView(currentIndex: $currentIndex, title: "Popular Movies", movieModel: popularMoviesViewModel.results)
-                    .onChange(of: currentIndex) { newValue in
-                        popularMoviesViewModel.shouldLoadData(result: popularMoviesViewModel.results[safe: newValue])
+                    .redacted(reason: nowPlayingViewModel.isLoading ? .placeholder : .init())
+                    
+                    Spacer()
+                    
+                    MovieView(
+                        currentIndex: $popularMoviesCurrentIndex,
+                        title: MoviesExploreList.popularMovies.title,
+                        movieModel: popularMoviesViewModel.results,
+                        isLoading: popularMoviesViewModel.isLoading,
+                        onTapGesture: {
+                            navigationPath.append(.popularMovies)
+                        })
+                    .onChange(of: popularMoviesCurrentIndex) { oldValue, newValue in
+                        popularMoviesViewModel.shouldLoadData(
+                            result: popularMoviesViewModel.results[safe: newValue]
+                        )
                     }
+                    .redacted(reason: nowPlayingViewModel.isLoading ? .placeholder : .init())
+                }
+            }
+            .scrollIndicators(.hidden)
+            .toolbarBackground(.automatic, for: .navigationBar)
+        }
+        .navigationDestination(for: MoviesExploreList.self) { path in
+            switch path {
+            case .nowPlaying:
+                MovieListRow(
+                    moviesExploreList: .nowPlaying,
+                    movieModel: nowPlayingViewModel.results
+                )
+            case .popularMovies:
+                MovieListRow(
+                    moviesExploreList: .popularMovies, 
+                    movieModel: popularMoviesViewModel.results
+                )
             }
         }
-        .scrollIndicators(.hidden)
-        .toolbarBackground(.automatic, for: .navigationBar)
     }
 }
 

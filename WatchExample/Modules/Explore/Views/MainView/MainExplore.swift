@@ -21,14 +21,14 @@ struct MainExplore: View {
     @State var selectedSegment: Segment = .movies
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView(.vertical) {
                 VStack {
                     Picker("", selection: $selectedSegment) {
                         ForEach(Segment.allCases, id: \.self) {
                             Text($0.rawValue)
-                               
-                                
+                            
+                            
                         }
                     }
                     .pickerStyle(SegmentedPickerStyle())
