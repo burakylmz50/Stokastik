@@ -148,7 +148,7 @@
 			isa = PBXGroup;
 			children = (
 				651A6A7E2A852E3A00CE9762 /* Stokastik-Info.plist */,
-				653BCF952A30BA75002238E1 /* WatchExample */,
+				653BCF952A30BA75002238E1 /* Stokastik */,
 				653BCF942A30BA75002238E1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -161,7 +161,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		653BCF952A30BA75002238E1 /* WatchExample */ = {
+		653BCF952A30BA75002238E1 /* Stokastik */ = {
 			isa = PBXGroup;
 			children = (
 				65234F8B2A3F25ED009A4794 /* Modules */,
@@ -171,7 +171,7 @@
 				653BCF9C2A30BA76002238E1 /* Preview Content */,
 				653BCF9A2A30BA76002238E1 /* Assets.xcassets */,
 			);
-			path = WatchExample;
+			path = Stokastik;
 			sourceTree = "<group>";
 		};
 		653BCF9C2A30BA76002238E1 /* Preview Content */ = {
